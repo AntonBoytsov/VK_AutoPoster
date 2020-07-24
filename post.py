@@ -8,25 +8,13 @@ class ImportContentError(Exception): pass
 
 
 class Post():
-    def __init__(self, time, path):
-        self.time = time
+    def __init__(self, path):
         self.__path = path
         self.__photos = []
         self.__docs = []
         self.__message = ''
         self.__message_file = None
         self.__attachments = ''
-
-
-    @property
-    def time(self):
-        return self.__time
-
-
-    @time.setter
-    def time(self, time):
-        assert isinstance(time, datetime.datetime), "Invalid post time"
-        self.__time = time
     
 
     def __len__(self):
@@ -34,11 +22,11 @@ class Post():
 
 
     def __eq__(self, other):
-        return self.__time == other.__time
+        return self.__path == other.__path
     
 
     def __lt__(self, other):
-        return self.__time < other.__time
+        return self.__path < other.__path
 
 
     def import_content(self):
@@ -58,7 +46,8 @@ class Post():
 
     def upload_content(self, vk_session, user_id, group_id):
         upload = vk_api.VkUpload(vk_session)
-
+        self.__attachments = ''
+        self.__message = ''
         if self.__photos:
             photos_path = [self.__path + '/' + photo for photo in self.__photos]
             photos = upload.photo_wall(photos_path, user_id, group_id)
@@ -82,29 +71,18 @@ class Post():
     def post(self, vk_session, owner_id):
         vk = vk_session.get_api()
         response = vk.wall.post(owner_id=owner_id,
-                                from_group=1,
+                                from_group=0,
                                 message=self.__message,
                                 attachments=self.__attachments)        
-        return response        
-
-
-
-
-def get_time(folder):
-        try:
-            dt = datetime.datetime.strptime(folder, "%d.%m.%y %H.%M")
-            return dt
-        except:
-            raise ValueError('Can not convert "{}" folder to post time'.format(folder))
+        return response
 
 
 def make_posts(posts_path):
     posts = []
     for p in os.listdir(posts_path):
         try:
-            post = Post( get_time(p), posts_path + p )
+            post = Post(posts_path + p)
             post.import_content()
-            print( 'post in {} - {} objects'.format(post.time, len(post)) )
             posts.append(post)
         except Exception as err:
             print('Error ({})'.format(err))
