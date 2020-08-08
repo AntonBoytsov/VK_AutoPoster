@@ -40,6 +40,8 @@ def main():
             except Exception as err:
                 print('[{}] - Error {}'.format(make_time(), err))
             print('-' * 40)
+        print('[{}] Sleeping for 2 hours before the next post...'.format(make_time()))
+        time.sleep(7200)
 
 
 if __name__ == '__main__':
