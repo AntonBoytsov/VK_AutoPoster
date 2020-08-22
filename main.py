@@ -6,6 +6,7 @@ import vk_api
 
 from post import make_posts
 from config import *
+from zooconfig import *
 
 
 def make_time():
