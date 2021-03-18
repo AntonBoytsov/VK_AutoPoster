@@ -15,6 +15,7 @@ class Post():
         self.__message = ''
         self.__message_file = None
         self.__attachments = ''
+        self.__attachments_file = None
     
 
     def __len__(self):
@@ -40,6 +41,8 @@ class Post():
                     self.__docs.append(file_)
                 elif file_.endswith('.txt') and self.__message_file is None:
                     self.__message_file = file_
+                elif file_.endswith('.att') and self.__attachments_file is None:
+                    self.__attachments_file = file_
         else:
             raise ImportContentError('Folder "{}" is empty'.format(self.__path.split('/')[-1]))
     
@@ -61,6 +64,11 @@ class Post():
                 dct = upload.document_wall(path, doc[:-4])
                 atcmt = 'doc' + str(dct[0]['owner_id']) + '_' + str(dct[0]['id'])
                 self.__attachments = ','.join( (self.__attachments, atcmt) )
+
+        if self.__attachments_file:
+            with open(self.__path + '/' + self.__attachments_file, 'rb') as f:
+                for line in f:
+                    self.__attachments = ','.join( (self.__attachments, line.decode('utf-8')) )
 
         if self.__message_file:
             with open(self.__path + '/' + self.__message_file, 'rb') as f:

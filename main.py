@@ -22,8 +22,7 @@ def two_factor():
 def main():
     vk_session = vk_api.VkApi(LOGIN, PASSWORD,
                               auth_handler=two_factor,
-                              scope=PERMISSIONS,
-                              app_id=6729884)
+                              scope=PERMISSIONS)
     vk_session.auth()
 
     posts_path = os.getcwd() + '/posts/'
