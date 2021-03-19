@@ -33,16 +33,20 @@ def main():
 
     for post in posts:
         for group in groups:
-            try:
-                print('[{}] Uploading files to server vk...'.format(make_time()))
-                post.upload_content(vk_session, USER_ID, group)
-                print('[{}] Posting to group {}...'.format(make_time(), group))
-                post.post(vk_session, group)
-                print('[{}] Success! Sleeping for 2 mins...'.format(make_time()))
-                time.sleep(120)
-            except Exception as err:
-                print('[{}] - Error {}'.format(make_time(), err))
-            print('-' * 40)
+            for tries in [1, 2, 3]:
+                try:
+                    print('[{}] Uploading files to server vk...'.format(make_time()))
+                    post.upload_content(vk_session, USER_ID, group)
+                    print('[{}] Posting to group {}...'.format(make_time(), group))
+                    post.post(vk_session, group)
+                    print('[{}] Success! Sleeping for 2 mins...'.format(make_time()))
+                    time.sleep(120)
+                    continue
+                except Exception as err:
+                    print('[{}] - Error {}'.format(make_time(), err))
+                    if tries != 3:
+                        print("Trying again...")
+                print('-' * 40)
         print('[{}] Sleeping for 2 hours before the next post...'.format(make_time()))
         time.sleep(7200)
 
