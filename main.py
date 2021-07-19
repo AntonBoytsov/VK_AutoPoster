@@ -29,7 +29,7 @@ def main():
     posts = make_posts(posts_path)
     print('=' * 40)
 
-    groups = list(set(ZOO_GROUPS.split(',')))
+    groups = list(set(ZOO_GROUPS_OSVV.split(',')))
 
     for post in posts:
         for group in groups:
